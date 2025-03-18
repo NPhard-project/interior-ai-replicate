@@ -28,7 +28,7 @@ with basic_tab:
     eta = st.slider('eta', 0.0, 1.0, 0.0, help="ノイズ除去の影響度:  \n  0.0→決定論的  \n  1.0→ランダム性増")
     image_resolution = st.select_slider('出力解像度', ['256', '512', '768', '1024'], '512')
     detect_resolution = st.slider('検出強度', 128, 1024, 512)
-    num_samples = st.sidebar.select_slider('生成画像数', ['1', '4'], '1') 
+    num_samples = st.gsidebar.select_slider('生成画像数', ['1', '4'], '1') 
     
 with advanced_tab:
     seed_col1, seed_col2 = st.columns([1, 2])
