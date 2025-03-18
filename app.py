@@ -161,9 +161,13 @@ if upload_file is not None:
                         valid_sizes = [64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1024]
                         return min(valid_sizes, key=lambda x: abs(x - size))
                     
+                    # マスクを反転する場合（必要に応じて）
+                    mask_array = 255 - mask_array  # 黒白反転
+                    
+                    # リクエストパラメータの設定
                     request_params = {
-                        "mask": "data:image/png;base64," + convert_to_bytes(blurred_mask),  # URI形式に変更
-                        "image": "data:image/png;base64," + convert_to_bytes(image),        # URI形式に変更
+                        "mask": "data:image/png;base64," + convert_to_bytes(Image.fromarray(mask_array)),  # 反転したマスクを使用
+                        "image": "data:image/png;base64," + convert_to_bytes(image),
                         "width": get_valid_size(image.width),    # 有効なサイズに調整
                         "height": get_valid_size(image.height),  # 有効なサイズに調整
                         "prompt": prompt,
@@ -226,6 +230,33 @@ if upload_file is not None:
 
                 else:
                     st.error('マスクが作成されていません。キャンバスに描画してください')
+
+                # マスクの値を確認するための表示を追加
+                st.subheader("デバッグ情報")
+                # with st.expander("マスクの詳細"):
+                #     st.write("マスク配列の形状:", mask_array.shape)
+                #     st.write("マスク配列の値の範囲:", np.min(mask_array), "〜", np.max(mask_array))
+                #     st.write("黒いピクセル (値=0) の数:", np.sum(mask_array == 0))
+                #     st.write("白いピクセル (値=255) の数:", np.sum(mask_array == 255))
+                    
+                #     # マスクの反転バージョンも表示（黒白反転）
+                #     inverted_mask = Image.fromarray(255 - mask_array)
+                #     st.write("反転マスク (黒白反転):")
+                #     st.image(inverted_mask, use_column_width=True)
+                
+                # リクエストパラメータの詳細を表示
+                with st.expander("リクエストパラメータ"):
+                    st.json({
+                        "width": get_valid_size(image.width),
+                        "height": get_valid_size(image.height),
+                        "prompt": prompt,
+                        "scheduler": "DPMSolverMultistep",
+                        "num_outputs": 1,
+                        "guidance_scale": cfg,
+                        "num_inference_steps": steps,
+                        "negative_prompt": negative_prompt if negative_prompt else None
+                    })
+                    st.write("マスクとイメージはBase64エンコードされたデータURIとして送信されます")
             except Exception as e:
                 import traceback
                 traceback.print_exc()
