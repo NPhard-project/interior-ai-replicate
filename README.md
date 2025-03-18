@@ -5,6 +5,9 @@
 ### Replicate アカウント設定
 [Replicate](https://replicate.com/home) からアカウント登録 / Billing の設定をする(有償)
 
+#### 環境変数 (.zshrc / .bashrc) に API キーを設定
+`export REPLICATE_API_TOKEN=r8_NXp**********************************`
+
 ### pip install requirements.txt
 `pip install requirements.txt` コマンドを実行
 
