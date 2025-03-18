@@ -22,9 +22,9 @@ st.sidebar.header('設定')
 basic_tab, detail_tab = st.sidebar.tabs(['基本設定', '詳細設定'])
 
 with basic_tab:
-    engine = st.selectbox(
-        'エンジンを選択', ["1", "2"]
-    )
+    # engine = st.selectbox(
+    #     'エンジンを選択', ["1", "2"]
+    # )
     steps = st.slider('ステップ数', 10, 150, 25)
     cfg = st.slider('CFGスケール', 1.0, 20.0, 7.5)
 with detail_tab:
@@ -167,7 +167,7 @@ if upload_file is not None:
                     # リクエストパラメータの設定
                     request_params = {
                         "mask": "data:image/png;base64," + convert_to_bytes(Image.fromarray(mask_array)),  # 反転したマスクを使用
-                        "image": "data:image/png;base64," + convert_to_bytes(image),
+                        "image": "data:image/png;base64," + convert_to_bytes(image=image),
                         "width": get_valid_size(image.width),    # 有効なサイズに調整
                         "height": get_valid_size(image.height),  # 有効なサイズに調整
                         "prompt": prompt,
@@ -195,14 +195,10 @@ if upload_file is not None:
                     status_text.text('画像生成中...')
                     progress_bar.progress(30)
 
-                    print(request_params)
-
                     answers = replicate.run(
                         "stability-ai/stable-diffusion-inpainting:95b7223104132402a9ae91cc677285bc5eb997834bd2349fa486f53910fd68b3",
                         input=request_params
                     )
-                    
-                    print(answers)
 
                     if answers and len(answers) > 0:
                         result_image_url = answers[0]  # これは画像の URL
@@ -261,6 +257,6 @@ if upload_file is not None:
                 import traceback
                 traceback.print_exc()
                 st.error(f'エラーが発生しました: {str(e)}')
-                st.error(traceback.format_exc())  # スタックトレースを表示
-                st.error('APIキーが正しく設定されているか確認してください')
+                # st.error(traceback.format_exc())  # スタックトレースを表示
+                # st.error('APIキーが正しく設定されているか確認してください')
         
