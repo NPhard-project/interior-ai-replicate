@@ -8,7 +8,18 @@ import replicate
 import io
 import base64
 import requests
+import os
+from dotenv import load_dotenv
 
+# .env ファイルから環境変数を読み込む
+load_dotenv()
+
+# レプリケートのAPIトークンを環境変数から取得
+replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
+if replicate_api_token:
+    os.environ["REPLICATE_API_TOKEN"] = replicate_api_token
+else:
+    st.warning("REPLICATE_API_TOKEN が設定されていません。.env ファイルを確認してください。")
 
 def convert_to_bytes(image):
     byte_stream = io.BytesIO()
