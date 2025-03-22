@@ -66,3 +66,6 @@ GEMINI_API_KEY=<YOUR_API_KEY_HERE>
 ```
 streamlit run gemini.py
 ```
+
+## 参照
+[Gemini 2.0 Flash Experimental](https://ai.google.dev/gemini-api/docs/image-generation?hl=ja#gemini-image-editing)
