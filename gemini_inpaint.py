@@ -191,7 +191,7 @@ if upload_file is not None:
                         )
                     )
 
-                    print(response)
+                    # print(response)
                     
                     # レスポンスから画像を取得
                     if hasattr(response, 'candidates') and response.candidates:
