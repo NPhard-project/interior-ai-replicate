@@ -3,7 +3,7 @@ streamlit==1.29.1
 streamlit-drawable-canvas==0.10.0
 numpy==1.26.2
 Pillow==11.0.0
-replicate==0.1.0
+replicate==1.0.4
 google-genai==1.7.0
 google-generativeai==0.8.4
 torch==2.2.2
