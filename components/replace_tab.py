@@ -27,7 +27,6 @@ def show_replace_tab():
     """置換タブの内容を表示する"""
     st.header('画像置換')
     st.text('画像の特定の領域を新しいコンテンツで置き換えるデモです')
-    st.text('画像をアップロードしてください')
 
     # サイドバーの設定
     with st.sidebar:
