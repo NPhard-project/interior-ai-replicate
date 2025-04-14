@@ -6,7 +6,6 @@ from google import genai
 from google.genai import types
 import os
 from dotenv import load_dotenv
-from components.utils.image_handler import convert_to_bytes, image_to_base64
 
 
 load_dotenv()

@@ -1,15 +1,9 @@
 import streamlit as st
 from PIL import Image
 import io
-# import base64
-# from google import genai
-# from google.genai import types
 import os
 from dotenv import load_dotenv
 import numpy as np
-# from streamlit_drawable_canvas import st_canvas
-# from torchvision.transforms import GaussianBlur
-# import torch
 import requests
 import replicate
 
