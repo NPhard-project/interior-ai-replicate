@@ -10,17 +10,7 @@ import io
 import base64
 import requests
 import os
-from dotenv import load_dotenv
 
-# .env ファイルから環境変数を読み込む
-load_dotenv()
-
-# レプリケートのAPIトークンを環境変数から取得
-replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
-if replicate_api_token:
-    os.environ["REPLICATE_API_TOKEN"] = replicate_api_token
-else:
-    st.warning("REPLICATE_API_TOKEN が設定されていません。.env ファイルを確認してください。")
 
 def convert_to_bytes(image):
     byte_stream = io.BytesIO()
@@ -84,7 +74,7 @@ if upload_file is not None:
         brush_size = st.slider('ブラシサイズ', 5, 50, 20)
     with col4:
         drawing_tool = st.selectbox('描画ツール', options=['freedraw'])
-    
+
     container_width = 700
     aspect_ratio = image.height / image.width
     canvas_width = min(container_width, image.width)
@@ -158,7 +148,7 @@ if upload_file is not None:
                             caption='ぼかし適用後のマスク',
                             use_column_width=True,
                         )
-                    
+
                     actual_seed = (
                         np.random.randint(0, 2**32 - 1) if use_random_seed else seed
                     )
@@ -167,15 +157,15 @@ if upload_file is not None:
                     status_text = st.empty()
                     status_text.text('APIリクエスト送信中...')
                     progress_bar.progress(10)
-                    
+
                     # 画像サイズを許容される値に調整
                     def get_valid_size(size):
                         valid_sizes = [64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1024]
                         return min(valid_sizes, key=lambda x: abs(x - size))
-                    
+
                     # マスクを反転する場合（必要に応じて）
                     mask_array = 255 - mask_array  # 黒白反転
-                    
+
                     # リクエストパラメータの設定
                     request_params = {
                         "mask": "data:image/png;base64," + convert_to_bytes(Image.fromarray(mask_array)),  # 反転したマスクを使用
@@ -203,7 +193,7 @@ if upload_file is not None:
 
                     if negative_prompt:
                         request_params['negative_prompt'] = negative_prompt
-                    
+
                     status_text.text('画像生成中...')
                     progress_bar.progress(30)
 
@@ -214,12 +204,12 @@ if upload_file is not None:
 
                     if answers and len(answers) > 0:
                         result_image_url = answers[0]  # これは画像の URL
-                        
+
                         # URLから画像をダウンロード
                         response = requests.get(result_image_url, stream=True)
                         if response.status_code == 200:
                             result_image = Image.open(io.BytesIO(response.content))
-                            
+
                             compare_col1, compare_col2 = st.columns(2)
                             with compare_col1:
                                 st.image(
@@ -246,12 +236,12 @@ if upload_file is not None:
                 #     st.write("マスク配列の値の範囲:", np.min(mask_array), "〜", np.max(mask_array))
                 #     st.write("黒いピクセル (値=0) の数:", np.sum(mask_array == 0))
                 #     st.write("白いピクセル (値=255) の数:", np.sum(mask_array == 255))
-                    
+
                 #     # マスクの反転バージョンも表示（黒白反転）
                 #     inverted_mask = Image.fromarray(255 - mask_array)
                 #     st.write("反転マスク (黒白反転):")
                 #     st.image(inverted_mask, use_column_width=True)
-                
+
                 # リクエストパラメータの詳細を表示
                 with st.expander("リクエストパラメータ"):
                     st.json({
@@ -271,4 +261,3 @@ if upload_file is not None:
                 st.error(f'エラーが発生しました: {str(e)}')
                 # st.error(traceback.format_exc())  # スタックトレースを表示
                 # st.error('APIキーが正しく設定されているか確認してください')
-        
