@@ -1,6 +1,6 @@
 opencv-python==4.11.0.86
 streamlit==1.37.1
-streamlit-drawable-canvas==0.10.0
+streamlit-drawable-canvas==0.9.3
 numpy==1.26.2
 Pillow==11.0.0
 replicate==1.0.4
