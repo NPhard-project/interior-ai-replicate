@@ -89,7 +89,7 @@ def show_inpaint_gemini_tab():
 
         # デフォルトプロンプトテンプレートに画像名とマスク名を含める
         instruction_prompt = """
-INSTRUCTION: Please inpaint/edit {input_filename} ONLY in the areas shown as black in the {mask_name}.png.
+INSTRUCTION: Please inpaint/edit {input_filename} ONLY in the areas shown as black area in the {mask_name}.png.
 
 DO NOT change any other part of the image outside the masked area.
 The masked area should be replaced with: {prompt}
@@ -103,6 +103,7 @@ Please generate a realistic and seamless result that integrates perfectly with t
         confirm_btn = st.button('送信')
 
         if confirm_btn and prompt and gemini_api_key:
+
             with st.spinner('Gemini APIに送信中...'):
                 try:
                     # マスクの処理
@@ -154,11 +155,10 @@ Please generate a realistic and seamless result that integrates perfectly with t
                                 use_column_width=True,
                             )
 
-                        mask_filename = f"{mask_name}.png"
                         blurred_mask.save(io.BytesIO(), format="PNG")
 
                         client = genai.Client(api_key=gemini_api_key)
-
+                        print(instruction_prompt.format(input_filename=input_filename, mask_name=mask_name, prompt=prompt))
                         response = client.models.generate_content(
                             model="gemini-2.0-flash-exp-image-generation",
                             contents=[

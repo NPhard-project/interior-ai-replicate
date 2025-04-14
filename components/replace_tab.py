@@ -13,7 +13,7 @@ import numpy as np
 import requests
 import replicate
 
-from components.utils.image_handler import convert_to_bytes
+from components.utils.image_handler import image_to_base64
 
 load_dotenv()
 
@@ -81,7 +81,7 @@ def show_replace_tab():
                     request_params = {
                         "eta": r_eta,
                         "seed": actual_seed,
-                        "image": "data:image/png;base64," + convert_to_bytes(image=image),
+                        "image": "data:image/png;base64," + image_to_base64(image=image),
                         "scale": r_scale,
                         "prompt": prompt,
                         "a_prompt": "best quality, high resolution, extremely detailed",

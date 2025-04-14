@@ -11,13 +11,11 @@ from components.utils.image_handler import convert_to_bytes, image_to_base64
 
 load_dotenv()
 
-gemini_api_key = os.environ.get("GEMINI_API_KEY")
+gemini_api_key = os.getenv("GEMINI_API_KEY")
 if gemini_api_key:
     os.environ["GEMINI_API_KEY"] = gemini_api_key
 else:
     st.warning("GEMINI_API_KEY が設定されていません。.env ファイルを確認してください。")
-
-print('gemini_api_key', gemini_api_key)
 
 def show_generate_tab():
     """生成タブの内容を表示する"""

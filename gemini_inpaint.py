@@ -43,18 +43,18 @@ upload_file = st.file_uploader('画像をアップロードしてください', 
 if upload_file is not None:
     # ファイル名を取得
     input_filename = upload_file.name
-    
+
     # アップロードされた画像を読み込み
     image_bytes = upload_file.getvalue()
     image = Image.open(io.BytesIO(image_bytes))
-    
+
     # 画像サイズの制限（必要に応じて）
     max_size = 1024
     if max(image.size) > max_size:
         ratio = max_size / max(image.size)
         new_size = (int(image.size[0] * ratio), int(image.size[1] * ratio))
         image = image.resize(new_size)
-    
+
     # 画像表示と情報
     col1, col2 = st.columns([2, 1])
     with col1:
@@ -63,7 +63,7 @@ if upload_file is not None:
         st.info(f'ファイル名: {input_filename}')
         st.info(f'画像サイズ: {image.width} x {image.height}')
         st.info(f'アスペクト比: {image.width/image.height}')
-    
+
     # マスク作成部分を追加
     st.subheader('マスク作成')
     st.write('黒い部分が置き換えられる領域です。マスクを描画してください。')
@@ -77,7 +77,7 @@ if upload_file is not None:
             'ぼかし半径', 1, 31, 11, 2
         )
         blur_sigma = st.slider('ぼかし強度', 1, 50, 20)
-    
+
     container_width = 700
     aspect_ratio = image.height / image.width
     canvas_width = min(container_width, image.width)
@@ -96,22 +96,22 @@ if upload_file is not None:
         key="canvas",
         display_toolbar=False,
     )
-    
+
     # テキストプロンプト入力
     st.subheader('プロンプト')
-    
+
     # マスク名の設定（オプション）
     mask_name = st.text_input('マスク名（任意）:', value=f'mask_for_{input_filename}')
-    
+
     # デフォルトプロンプトテンプレートに画像名とマスク名を含める
     default_prompt = f"{input_filename}を以下の指示に従って局所的に修正してください。ただしマスク画像を {mask_name}.png とし、マスク画像の黒い部分が置き換えられる領域です。編集内容："
-    prompt = st.text_area('画像編集のプロンプトを入力してください', 
+    prompt = st.text_area('画像編集のプロンプトを入力してください',
                         #  value=default_prompt,
                          help='どのように画像を編集したいかを詳細に記述してください')
-    
+
     # 確認ボタン
     confirm_btn = st.button('送信')
-    
+
     if confirm_btn and prompt and gemini_api_key:
         with st.spinner('Gemini APIに送信中...'):
             try:
@@ -163,21 +163,21 @@ if upload_file is not None:
                             caption='ぼかし適用後のマスク',
                             use_column_width=True,
                         )
-                    
+
                     # マスク画像を一時保存する機能（オプション）
                     mask_filename = f"{mask_name}.png"
                     blurred_mask.save(io.BytesIO(), format="PNG")  # 一時的に保存操作をシミュレート
-                    
+
                     # # APIリクエスト情報の表示
                     # request_info = st.expander("リクエスト情報", expanded=False)
                     # with request_info:
                     #     st.write(f"入力画像: {input_filename}")
                     #     st.write(f"マスク画像: {mask_filename}")
                     #     st.write(f"プロンプト: {prompt}")
-                    
+
                     # API キーを明示的に指定してクライアントを初期化
                     client = genai.Client(api_key=gemini_api_key)
-                    
+
                     # Gemini APIに送信
                     response = client.models.generate_content(
                         model="gemini-2.0-flash-exp-image-generation",
@@ -192,7 +192,7 @@ if upload_file is not None:
                     )
 
                     # print(response)
-                    
+
                     # レスポンスから画像を取得
                     if hasattr(response, 'candidates') and response.candidates:
                         for candidate in response.candidates:
@@ -202,10 +202,10 @@ if upload_file is not None:
                                         # 生成された画像を表示
                                         result_image_bytes = base64.b64decode(part.inline_data.data)
                                         result_image = Image.open(io.BytesIO(result_image_bytes))
-                                        
+
                                         # 結果ファイル名の生成
                                         result_filename = f"edited_{input_filename}"
-                                        
+
                                         # 比較表示
                                         compare_col1, compare_col2 = st.columns(2)
                                         with compare_col1:
@@ -220,14 +220,14 @@ if upload_file is not None:
                                                 caption=f'生成結果: {result_filename}',
                                                 use_column_width=True,
                                             )
-                                        
+
                                         # 生成画像のダウンロードリンク
                                         buffered = io.BytesIO()
                                         result_image.save(buffered, format="PNG")
                                         img_str = base64.b64encode(buffered.getvalue()).decode()
                                         href = f'<a href="data:file/png;base64,{img_str}" download="{result_filename}">生成画像をダウンロード</a>'
                                         st.markdown(href, unsafe_allow_html=True)
-                    
+
                     # テキストレスポンスがあれば表示
                     text_response = ""
                     if hasattr(response, 'candidates') and response.candidates:
@@ -236,20 +236,20 @@ if upload_file is not None:
                                 for part in candidate.content.parts:
                                     if hasattr(part, 'text') and part.text:
                                         text_response += part.text
-                    
+
                     if text_response:
                         st.subheader("Geminiからのレスポンス")
                         st.write(text_response)
                 else:
                     st.error('マスクが作成されていません。キャンバスに描画してください')
-                
+
             except Exception as e:
                 import traceback
                 traceback.print_exc()
                 st.error(f'エラーが発生しました: {str(e)}')
-    
+
     elif confirm_btn and not prompt:
         st.warning("プロンプトを入力してください。")
-    
+
     elif confirm_btn and not gemini_api_key:
         st.error("GEMINI_API_KEY が設定されていません。.env ファイルを確認してください。")

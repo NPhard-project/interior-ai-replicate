@@ -11,7 +11,7 @@ import torch
 import requests
 import replicate
 
-from components.utils.image_handler import convert_to_bytes
+from components.utils.image_handler import image_to_base64
 
 load_dotenv()
 
@@ -159,8 +159,8 @@ def show_inpaint_replicate_tab():
                         mask_array = 255 - mask_array
 
                         request_params = {
-                            "mask": "data:image/png;base64," + convert_to_bytes(Image.fromarray(mask_array)),
-                            "image": "data:image/png;base64," + convert_to_bytes(image=image),
+                            "mask": "data:image/png;base64," + image_to_base64(Image.fromarray(mask_array)),
+                            "image": "data:image/png;base64," + image_to_base64(image),
                             "width": get_valid_size(image.width),
                             "height": get_valid_size(image.height),
                             "prompt": prompt,
