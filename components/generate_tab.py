@@ -8,8 +8,16 @@ import os
 from dotenv import load_dotenv
 from components.utils.image_handler import convert_to_bytes, image_to_base64
 
-# Gemini APIキーを環境変数から取得
+
+load_dotenv()
+
 gemini_api_key = os.environ.get("GEMINI_API_KEY")
+if gemini_api_key:
+    os.environ["GEMINI_API_KEY"] = gemini_api_key
+else:
+    st.warning("GEMINI_API_KEY が設定されていません。.env ファイルを確認してください。")
+
+print('gemini_api_key', gemini_api_key)
 
 def show_generate_tab():
     """生成タブの内容を表示する"""
@@ -50,6 +58,7 @@ def show_generate_tab():
         if confirm_btn and prompt:
             with st.spinner('Gemini APIに送信中...'):
                 try:
+                    print('gemini_api_key', gemini_api_key)
                     # API キーを明示的に指定してクライアントを初期化
                     client = genai.Client(api_key=gemini_api_key)
 
@@ -57,7 +66,7 @@ def show_generate_tab():
                     # image_data = convert_to_bytes(image)
 
                     response = client.models.generate_content(
-                        model="gemini-1.5-flash-exp-image-generation",
+                        model="gemini-2.0-flash-exp-image-generation",
                         contents=[
                             prompt,
                             image,

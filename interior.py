@@ -17,8 +17,7 @@ from components.generate_tab import show_generate_tab
 from components.replace_tab import show_replace_tab
 from components.inpaint_tab import show_inpaint_tab
 
-# .env ファイルから環境変数を読み込む
-load_dotenv()
+
 
 options = [
     ('generate', '生成'),
