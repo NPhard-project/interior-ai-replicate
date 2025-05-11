@@ -79,7 +79,7 @@ def show_generate_tab():
                         for candidate in response.candidates:
                             if hasattr(candidate, 'content') and candidate.content:
                                 for part in candidate.content.parts:
-                                    if hasattr(part, 'inline_data') and part.inline_data.mime_type.startswith('image/'):
+                                    if hasattr(part, 'inline_data') and part.inline_data and hasattr(part.inline_data, 'mime_type') and part.inline_data.mime_type.startswith('image/'):
                                         # 生成された画像を表示
                                         result_image_bytes = base64.b64decode(part.inline_data.data)
                                         result_image = Image.open(io.BytesIO(result_image_bytes))
